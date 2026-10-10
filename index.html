@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Măng Măng Xin Chào!</title>
+    <!-- Font chữ Quicksand kết hợp Nunito tròn trịa, đậm nét và cực kỳ dễ đọc -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', 'Quicksand', sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Xóa hiệu ứng xám khi chạm trên iPhone */
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            /* Sử dụng -webkit-fill-available để tương thích tuyệt đối với thanh công cụ Safari iOS */
+            height: -webkit-fill-available;
+            overflow: hidden;
+            background: linear-gradient(135deg, #a8c0ff 0%, #3e5288 100%);
+        }
+
+        /* Container chứa các slide */
+        .slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hiệu ứng nền Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* SLIDE 1 - TIÊU ĐỀ NỔI BẬT */
+        .title-main {
+            font-size: clamp(2.2rem, 6vw, 4.2rem);
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 
+                0 4px 10px rgba(15, 23, 42, 0.4),
+                0 8px 25px rgba(2, 132, 199, 0.6),
+                0 0 40px rgba(255, 255, 255, 0.8);
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+            line-height: 1.3;
+            animation: floatText 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatText {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* NÚT CHUNG NỔI BẬT */
+        .custom-btn {
+            background: #ffffff;
+            color: #1e3a8a;
+            border: 3px solid #60a5fa;
+            padding: 14px 40px;
+            font-size: clamp(1.1rem, 3vw, 1.35rem);
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.25),
+                0 0 15px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            -webkit-appearance: none; /* Khử style mặc định của nút trên iOS */
+        }
+
+        .custom-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* SLIDE 2 - DÒNG CHỮ */
+        .message-box {
+            max-width: 750px;
+            padding: 20px;
+            z-index: 20;
+        }
+
+        .fade-text {
+            font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 
+                0 4px 12px rgba(15, 23, 42, 0.5),
+                0 0 25px rgba(56, 189, 248, 0.7);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+            line-height: 1.5;
+        }
+
+        .fade-text.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .next-btn-container {
+            margin-top: 35px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease;
+        }
+
+        .next-btn-container.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* SLIDE 3 - HỘP QUÀ & THÔNG ĐIỆP */
+        .gift-box-wrapper {
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+            padding: 10px;
+        }
+
+        .gift-icon {
+            font-size: 5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+            animation: bounceGift 1.8s infinite ease-in-out;
+        }
+
+        @keyframes bounceGift {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+
+        .gift-hint {
+            font-size: 1.2rem;
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.3);
+            padding: 8px 20px;
+            border-radius: 30px;
+        }
+
+        .gift-message {
+            display: none;
+            max-width: 90%;
+            width: 450px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .final-text {
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 
+                0 3px 10px rgba(15, 23, 42, 0.5),
+                0 0 20px rgba(96, 165, 250, 0.6);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas vẽ nền -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="slide-container">
+        <!-- SLIDE 1 -->
+        <div class="slide active" id="slide1">
+            <h1 class="title-main">'' MĂNG MĂNG XIN CHÀO ! ''</h1>
+            <button class="custom-btn" onclick="goToSlide(2)">Start</button>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide" id="slide2">
+            <div class="message-box">
+                <div class="fade-text" id="text-s2">"Hôm nay cậu có mệt hongg?"</div>
+                <div class="next-btn-container" id="next-btn-s2">
+                    <button class="custom-btn" onclick="goToSlide(3)">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide" id="slide3">
+            <div class="gift-box-wrapper" id="giftBox" onclick="openGift()">
+                <div class="gift-icon">🎁</div>
+                <div class="gift-hint">Chạm để mở quà nhé!</div>
+            </div>
+            <div class="gift-message" id="giftMsg">
+                <p class="final-text">''Cố nhên, đời mà.. tớ cũng mệt lém hahahah''</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToSlide(slideNum) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('slide' + slideNum);
+            target.classList.add('active');
+
+            if (slideNum === 2) {
+                runSlide2Sequence();
+            }
+        }
+
+        function runSlide2Sequence() {
+            const textS2 = document.getElementById('text-s2');
+            const nextBtnS2 = document.getElementById('next-btn-s2');
+            
+            textS2.classList.remove('show');
+            nextBtnS2.classList.remove('show');
+
+            setTimeout(() => {
+                textS2.classList.add('show');
+            }, 600);
+
+            setTimeout(() => {
+                nextBtnS2.classList.add('show');
+            }, 2000);
+        }
+
+        function openGift() {
+            document.getElementById('giftBox').style.display = 'none';
+            document.getElementById('giftMsg').style.display = 'block';
+        }
+
+        // --- CANVAS TỐI ƯU CHO MOBILE / SAFARI ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const flowers = [];
+        const butterflies = [];
+
+        // Giảm số lượng hạt trên mobile một chút để iPhone đời cũ chạy siêu mượt không giật khung hình
+        const isMobile = window.innerWidth < 768;
+        const flowerCount = isMobile ? 25 : 45;
+        const butterflyCount = isMobile ? 4 : 7;
+
+        for (let i = 0; i < flowerCount; i++) {
+            flowers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 3.5 + 2,
+                color: Math.random() > 0.4 ? 'rgba(255, 255, 255, 0.75)' : 'rgba(191, 219, 254, 0.65)',
+                speedX: (Math.random() - 0.5) * 0.25,
+                speedY: (Math.random() - 0.5) * 0.25,
+                angle: Math.random() * Math.PI * 2,
+                spin: (Math.random() - 0.5) * 0.015
+            });
+        }
+
+        for (let i = 0; i < butterflyCount; i++) {
+            butterflies.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 8 + 10,
+                speedX: (Math.random() + 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.3,
+                wingState: Math.random() * Math.PI,
+                wingSpeed: 0.1
+            });
+        }
+
+        function drawButterfly(b) {
+            ctx.save();
+            ctx.translate(b.x, b.y);
+            ctx.scale(Math.sin(b.wingState), 1);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+            ctx.beginPath();
+            ctx.ellipse(-b.size/2, 0, b.size/2, b.size, Math.PI / 4, 0, Math.PI * 2);
+            ctx.ellipse(b.size/2, 0, b.size/2, b.size, -Math.PI / 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function animate() {
+            let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#7dd3fc');
+            gradient.addColorStop(0.5, '#38bdf8');
+            gradient.addColorStop(1, '#1e40af');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            flowers.forEach(f => {
+                f.x += f.speedX;
+                f.y += f.speedY;
+                f.angle += f.spin;
+
+                if (f.x < 0) f.x = canvas.width;
+                if (f.x > canvas.width) f.x = 0;
+                if (f.y < 0) f.y = canvas.height;
+                if (f.y > canvas.height) f.y = 0;
+
+                ctx.save();
+                ctx.translate(f.x, f.y);
+                ctx.rotate(f.angle);
+                ctx.fillStyle = f.color;
+                
+                ctx.beginPath();
+                for (let j = 0; j < 5; j++) {
+                    ctx.ellipse(0, -f.radius, f.radius * 0.5, f.radius * 1.1, 0, 0, Math.PI * 2);
+                    ctx.rotate((Math.PI * 2) / 5);
+                }
+                    ctx.fill();
+                ctx.restore();
+            });
+
+            butterflies.forEach(b => {
+                b.x += b.speedX;
+                b.y += b.speedY + Math.sin(b.wingState) * 0.2;
+                b.wingState += b.wingSpeed;
+
+                if (b.x > canvas.width + 40) b.x = -40;
+                if (b.y < -40) b.y = canvas.height + 40;
+                if (b.y > canvas.height + 40) b.y = -40;
+
+                drawButterfly(b);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
